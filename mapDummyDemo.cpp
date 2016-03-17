@@ -4,12 +4,12 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
-#define SWIDTH 640
-#define SHEIGHT 480
+#define SWIDTH 800
+#define SHEIGHT 600
 #define SPEED 30
 #define DEALERS 100
-#define MWIDTH 100
-#define MHEIGHT 100
+#define MWIDTH 20
+#define MHEIGHT 20
 
 fgng_map map;
 fgng_dummy link;
@@ -111,34 +111,6 @@ int renderHearts()
   return 0;
 }
 
-int playOutSounds(void)
-{
-  int i;
-  for(i=0;i<DEALERS;i++) {
-    if ( wizard[i].state != 2 && (wizard[i].pos.x-wizard[i].pos.w > SWIDTH) ) {
-      wizard[i].state = 2;
-      score++;
-      Mix_PlayChannel(-1,out,0);
-    }
-    if ( wizard[i].state != 2 && (wizard[i].pos.y-wizard[i].pos.h > SHEIGHT) ) {
-      wizard[i].state = 2;
-      score++;
-      Mix_PlayChannel(-1,out,0);
-    }
-    if ( wizard[i].state != 2 && (wizard[i].pos.y+wizard[i].pos.h < 0) ) {
-      wizard[i].state = 2;
-      score++;
-      Mix_PlayChannel(-1,out,0);
-    }
-    if ( wizard[i].state != 2 && (wizard[i].pos.x+wizard[i].pos.w < 0) ) {
-      wizard[i].state = 2;
-      score++;
-      Mix_PlayChannel(-1,out,0);
-    }
-  }
-  return 0;
-}
-
 int computeCollisions(void)
 {
   int i;
@@ -212,8 +184,8 @@ int main(int argc,char *argv[])
   heart = SDL_CreateTextureFromSurface(renderer,heartSurface);
   SDL_FreeSurface(heartSurface);
   
-  initSounds();
   initDummies();
+  initSounds();
 
   fgng_map_init(&map,0,0,MWIDTH,MHEIGHT,SWIDTH,SHEIGHT,
 		&renderer,(char *)"./data/images/tiles/floor1.png");
@@ -260,7 +232,6 @@ int main(int argc,char *argv[])
       death = true;
     }
     SDL_RenderPresent(renderer);
-    //    playOutSounds();
     computeCollisions();
     computeCollisions2();
   }
