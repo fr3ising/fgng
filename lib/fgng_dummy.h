@@ -1,6 +1,8 @@
 #ifndef FGNG_DUMMY_H
 #define FGNG_DUMMY_H
 
+#include "fgng_map.h"
+
 #define ORI_N 0
 #define ORI_S 1
 #define ORI_W 2
@@ -27,6 +29,7 @@ struct fgng_dummy {
   int transition;
   int activeTransitionAnim;
   bool overlapTransition;
+  fgng_map *map;
   bool (*movement)(fgng_dummy *,SDL_Event *event);
 };
 
@@ -41,7 +44,9 @@ bool fgng_dummy_renderCopy(fgng_dummy *o);
 bool fgng_dummy_move(fgng_dummy *o,SDL_Event *event);
 bool fgng_dummy_init(fgng_dummy *o,int x,int y,int sx,int sy,
 		     int xScale,int yScale,
-		     int height,int width,int nOri,int ori,SDL_Renderer **renderer,char *texture);
+		     int height,int width,int nOri,int ori,
+		     SDL_Renderer **renderer,char *texture,
+		     fgng_map *map);
 bool fgng_dummy_loadRenderer(fgng_dummy *o,SDL_Renderer **renderer);
 bool fgng_dummy_loadTexture(fgng_dummy *o,char *path);
 bool fgng_dummy_free(fgng_dummy *o);

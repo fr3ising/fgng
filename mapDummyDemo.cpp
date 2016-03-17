@@ -4,17 +4,19 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
-const int SWIDTH = 640;
-const int SHEIGHT = 480;
-#define SPEED 60
-#define DEALERS 24
+#define SWIDTH 640
+#define SHEIGHT 480
+#define SPEED 30
+#define DEALERS 100
+#define MWIDTH 100
+#define MHEIGHT 100
 
+fgng_map map;
 fgng_dummy link;
 fgng_dummy wizard[DEALERS];
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
-SDL_Texture *bgTexture = NULL;
 SDL_Texture *heart = NULL;
 SDL_Texture *scoreTexture;
 SDL_Texture *introTexture;
@@ -51,12 +53,12 @@ int showScore(void)
 int initDummies(void)
 {
   int i;
-  fgng_dummy_init(&link,10,10,0,0,3,3,24,16,4,0,&renderer,(char *)"./data/images/chars/link1.png");
+  fgng_dummy_init(&link,MWIDTH/2,MHEIGHT/2,0,0,3,3,24,16,4,0,&renderer,(char *)"./data/images/chars/link1.png",&map);
   link.movement = &fgng_dummy_arrowMovement;
   link.state = 4;
   for (i=0;i<DEALERS;i++) {
     fgng_dummy_init(&wizard[i],(int)(drand48()*(SWIDTH-16)/16),(int)(drand48()*(SHEIGHT-16)/16),
-		    0,0,3,3,16,16,4,0,&renderer,(char *)"./data/images/chars/wizard1.png");
+		    0,0,3,3,16,16,4,0,&renderer,(char *)"./data/images/chars/wizard1.png",&map);
     wizard[i].movement = &fgng_dummy_randomMovement;
     wizard[i].collided = false;
     wizard[i].state = 0;
@@ -77,8 +79,6 @@ int initSounds(void)
 
 int renderDummies(void) {
   int i;
-  SDL_RenderClear(renderer);
-  SDL_RenderCopy(renderer,bgTexture,NULL,NULL);
   fgng_dummy_move(&link,&event);
   for(i=0;i<DEALERS;i++) {
     fgng_dummy_move(&wizard[i],&event);
@@ -148,7 +148,7 @@ int computeCollisions(void)
 	if ( link.sx != 0 || link.sy != 0 ) {
 	  if ( wizard[i].state == 1 ) {
 	    if ( fgng_dummy_runTransition(&link,(char *)"./data/images/transitions/fire.png",3,true) ) {
-	      link.state--;
+	      //	      link.state--;
 	      Mix_PlayChannel(-1,hurt,0);
 	    }
 	    Mix_PlayChannel(-1,burning,0);
@@ -202,15 +202,10 @@ int main(int argc,char *argv[])
   bool quit;
   bool start;
   bool death;
-  SDL_Surface *bgSurface = NULL;
   SDL_Surface *heartSurface = NULL;
 
   fgng_init(&window,&renderer,(char *)"dummy Demo",SWIDTH,SHEIGHT);
-
   font = TTF_OpenFont( "./data/font/font.ttf", 28 );
-  bgSurface = IMG_Load((char *)"./data/images/backgrounds/background.png");
-  bgTexture = SDL_CreateTextureFromSurface(renderer,bgSurface);
-  SDL_FreeSurface(bgSurface);
 
   heartSurface = IMG_Load((char *)"./data/images/icons/heart.png");
   SDL_SetColorKey(heartSurface,SDL_TRUE,SDL_MapRGB(heartSurface->format,0,0,0xFF));
@@ -219,6 +214,9 @@ int main(int argc,char *argv[])
   
   initSounds();
   initDummies();
+
+  fgng_map_init(&map,0,0,MWIDTH,MHEIGHT,SWIDTH,SHEIGHT,
+		&renderer,(char *)"./data/images/tiles/floor1.png");
 
   quit = false;
   start = false;
@@ -240,6 +238,8 @@ int main(int argc,char *argv[])
 	}
       }
     }
+    SDL_RenderClear(renderer);
+    fgng_map_renderCopy(&map);
     renderDummies();
     renderHearts();
     showScore();
@@ -260,7 +260,7 @@ int main(int argc,char *argv[])
       death = true;
     }
     SDL_RenderPresent(renderer);
-    playOutSounds();
+    //    playOutSounds();
     computeCollisions();
     computeCollisions2();
   }

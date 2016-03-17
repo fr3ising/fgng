@@ -52,3 +52,30 @@ bool fgng_close(SDL_Window **window,SDL_Renderer **renderer)
   return true;
 }
 
+bool fgng_SDL_Rect_collision(SDL_Rect *o,SDL_Rect *target)
+{
+  int leftA,rightA,topA,bottomA;
+  int leftB,rightB,topB,bottomB;
+  leftA = o->x;
+  rightA = o->x + o->w;
+  topA = o->y;
+  bottomA = o->y + o->h;
+  leftB = target->x;
+  rightB = target->x + target->w;
+  topB = target->y;
+  bottomB = target->y + target->h;
+  if( bottomA <= topB ) {
+    return false;
+  }
+  if( topA >= bottomB ) {
+    return false;
+  }
+  if( rightA <= leftB ) {
+    return false;
+  }
+  if( leftA >= rightB ) {
+    return false;
+  }
+  return true;
+
+}

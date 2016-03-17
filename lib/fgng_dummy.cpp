@@ -33,7 +33,8 @@ bool fgng_dummy_changeTexture(fgng_dummy *o,char *path,int nAnim,int nOri)
 bool fgng_dummy_init(fgng_dummy *o,int x,int y,int sx,int sy,
 		     int xScale,int yScale,
 		     int height,int width,int nOri,int ori,
-		     SDL_Renderer **renderer,char *texture)
+		     SDL_Renderer **renderer,char *texture,
+		     fgng_map *map)
 {
   Uint32 format;
   int access,w,h;
@@ -55,6 +56,7 @@ bool fgng_dummy_init(fgng_dummy *o,int x,int y,int sx,int sy,
   SDL_QueryTexture(o->texture,&format,&access,&w,&h);
   o->anim = 0;
   o->nAnim = h/o->height;
+  o->map = map;
   return true;
 }
 
@@ -79,8 +81,8 @@ bool fgng_dummy_renderCopy(fgng_dummy *o)
   SDL_Rect srcRect;
   Uint32 format;
   int access,w,h;
-  o->pos.y = o->y*o->height;
-  o->pos.x = o->x*o->width;
+  o->pos.x = o->x*o->width-o->map->cam.x;
+  o->pos.y = o->y*o->height-o->map->cam.y;
   o->pos.w = o->width*o->xScale;
   o->pos.h = o->height*o->yScale;
   if ( o->transition <= 0 ) { 
@@ -165,23 +167,25 @@ bool fgng_dummy_arrowMovement(fgng_dummy *o,SDL_Event *event)
   if ( o->sx != 0 || o->sy != 0 ) {
     o->anim++;
   }
-  if ( o->pos.x < 0 ) {
-    o->x++;
-    return false;
-  }
-  if ( o->pos.x+o->pos.w > SWIDTH ) {
-    o->x--;
-    return false;
-  }
-  if ( o->pos.y < 0 ) {
-    o->y++;
-    return false;
-  }
-  if ( o->pos.y+o->pos.h > SHEIGHT ) {
-    o->y--;
-    return false;
-  }
+  // if ( o->x < 0 ) {
+  //   o->x++;
+  //   return false;
+  // }
+  // if ( (o->x+3)*o->width > o->map->nHor*o->map->w ) {
+  //   o->x--;
+  //   return false;
+  // }
+  // if ( o->y < 0 ) {
+  //   o->y++;
+  //   return false;
+  // }
+  // if ( (o->y+3)*o->height > o->map->nVer*o->map->h ) {
+  //   o->y--;
+  //   return false;
+  // }
   fgng_dummy_changePosition(o);
+  o->map->cam.x = o->x*o->width-0.5*(o->map->cam.w-o->pos.w);
+  o->map->cam.y = o->y*o->height-0.5*(o->map->cam.h-o->pos.h);
   return true;
 }
 
@@ -241,25 +245,25 @@ bool fgng_dummy_arrowManagement(fgng_dummy *o,SDL_Event *event)
 bool fgng_dummy_randomMovement(fgng_dummy *o,SDL_Event *event)
 {
   bool boundary = false;
-  if ( o->pos.x < 0 ) {
+  if ( o->x < 0 ) {
     o->x++;
     o->sx *= -1;
     o->ori = ORI_E;
     boundary = true;
   }
-  if ( o->pos.x+o->pos.w > SWIDTH ) {
+  if ( (o->x+1)*o->pos.w > o->map->nHor*o->map->w ) {
     o->x--;
     o->sx *= -1;
     o->ori = ORI_W;
     boundary = true;
   }
-  if ( o->pos.y < 0 ) {
+  if ( o->y < 0 ) {
     o->y++;
     o->sy *= -1;
     o->ori = ORI_S;
     boundary = true;
   }
-  if ( o->pos.y+o->pos.h > SHEIGHT ) {
+  if ( (o->y+1)*o->pos.h > o->map->nVer*o->map->h ) {
     o->y--;
     o->sy *= -1;
     o->ori = ORI_N;
@@ -316,27 +320,5 @@ bool fgng_dummy_constantMovement(fgng_dummy *o,SDL_Event *event)
 
 bool fgng_dummy_collision(fgng_dummy *o,fgng_dummy *target)
 {
-  int leftA,rightA,topA,bottomA;
-  int leftB,rightB,topB,bottomB;
-  leftA = o->pos.x;
-  rightA = o->pos.x + o->pos.w;
-  topA = o->pos.y;
-  bottomA = o->pos.y + o->pos.h;
-  leftB = target->pos.x;
-  rightB = target->pos.x + target->pos.w;
-  topB = target->pos.y;
-  bottomB = target->pos.y + target->pos.h;
-  if( bottomA <= topB ) {
-    return false;
-  }
-  if( topA >= bottomB ) {
-    return false;
-  }
-  if( rightA <= leftB ) {
-    return false;
-  }
-  if( leftA >= rightB ) {
-    return false;
-  }
-  return true;
+  return fgng_SDL_Rect_collision(&o->pos,&target->pos);
 }

@@ -16,5 +16,6 @@
 
 bool fgng_init(SDL_Window **window,SDL_Renderer **renderer,char *title,int sw,int sh);
 bool fgng_close(SDL_Window **window,SDL_Renderer **renderer);
+bool fgng_SDL_Rect_collision(SDL_Rect *o,SDL_Rect *target);
 
 #endif

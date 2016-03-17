@@ -9,7 +9,10 @@ LD_FLAGS = -Wall -O3
 
 OBJECTS = 
 
-all: dummyDemo
+all: mapDummyDemo
+
+mapDummyDemo: mapDummyDemo.o libfgng-1.0.a $(OBJECTS)
+	$(LD) $(LD_FLAGS) -o $@ mapDummyDemo.o $(LIBS) $(OBJECTS)
 
 dummyDemo: dummyDemo.o libfgng-1.0.a $(OBJECTS)
 	$(LD) $(LD_FLAGS) -o $@ dummyDemo.o $(LIBS) $(OBJECTS)
