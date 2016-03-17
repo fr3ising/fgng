@@ -7,9 +7,9 @@
 #define SWIDTH 800
 #define SHEIGHT 600
 #define SPEED 30
-#define DEALERS 100
-#define MWIDTH 20
-#define MHEIGHT 20
+#define DEALERS 2000
+#define MWIDTH 200
+#define MHEIGHT 200
 
 fgng_map map;
 fgng_dummy link;

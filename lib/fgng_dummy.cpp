@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-const int SWIDTH = 640;
-const int SHEIGHT = 480;
-
 bool fgng_dummy_changeTexture(fgng_dummy *o,char *path,int nAnim,int nOri)
 {
   Uint32 format;
