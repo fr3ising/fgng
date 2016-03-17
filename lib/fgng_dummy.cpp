@@ -167,22 +167,18 @@ bool fgng_dummy_arrowMovement(fgng_dummy *o,SDL_Event *event)
   if ( o->sx != 0 || o->sy != 0 ) {
     o->anim++;
   }
-  // if ( o->x < 0 ) {
-  //   o->x++;
-  //   return false;
-  // }
-  // if ( (o->x+3)*o->width > o->map->nHor*o->map->w ) {
-  //   o->x--;
-  //   return false;
-  // }
-  // if ( o->y < 0 ) {
-  //   o->y++;
-  //   return false;
-  // }
-  // if ( (o->y+3)*o->height > o->map->nVer*o->map->h ) {
-  //   o->y--;
-  //   return false;
-  // }
+  if ( o->x < 0 ) {
+    o->x++;
+  }
+  if ( (o->x+3)*o->width > o->map->nHor*o->map->w ) {
+    o->x--;
+  }
+  if ( o->y < 0 ) {
+    o->y++;
+  }
+  if ( (o->y+3)*o->height > o->map->nVer*o->map->h ) {
+    o->y--;
+  }
   fgng_dummy_changePosition(o);
   o->map->cam.x = o->x*o->width-0.5*(o->map->cam.w-o->pos.w);
   o->map->cam.y = o->y*o->height-0.5*(o->map->cam.h-o->pos.h);
@@ -251,7 +247,7 @@ bool fgng_dummy_randomMovement(fgng_dummy *o,SDL_Event *event)
     o->ori = ORI_E;
     boundary = true;
   }
-  if ( (o->x+1)*o->pos.w > o->map->nHor*o->map->w ) {
+  if ( (o->x+1)*o->width > o->map->nHor*o->map->w ) {
     o->x--;
     o->sx *= -1;
     o->ori = ORI_W;
@@ -263,7 +259,7 @@ bool fgng_dummy_randomMovement(fgng_dummy *o,SDL_Event *event)
     o->ori = ORI_S;
     boundary = true;
   }
-  if ( (o->y+1)*o->pos.h > o->map->nVer*o->map->h ) {
+  if ( (o->y+1)*o->width > o->map->nVer*o->map->h ) {
     o->y--;
     o->sy *= -1;
     o->ori = ORI_N;

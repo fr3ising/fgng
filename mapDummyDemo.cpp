@@ -57,7 +57,7 @@ int initDummies(void)
   link.movement = &fgng_dummy_arrowMovement;
   link.state = 4;
   for (i=0;i<DEALERS;i++) {
-    fgng_dummy_init(&wizard[i],(int)(drand48()*(SWIDTH-16)/16),(int)(drand48()*(SHEIGHT-16)/16),
+    fgng_dummy_init(&wizard[i],(int)(drand48()*(MWIDTH)),(int)(drand48()*(MHEIGHT)),
 		    0,0,3,3,16,16,4,0,&renderer,(char *)"./data/images/chars/wizard1.png",&map);
     wizard[i].movement = &fgng_dummy_randomMovement;
     wizard[i].collided = false;
