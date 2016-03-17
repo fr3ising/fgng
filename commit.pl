@@ -16,6 +16,7 @@ system("git add *.cpp\n");
 system("git add lib/Makefile\n");
 system("git add lib/*.cpp\n");
 system("git add lib/*.h\n");
+system("git add data/images/tiles/*.png");
 system("git add data/images/transitions/*.png");
 system("git add data/images/icons/*.png");
 system("git add data/images/chars/*.png");

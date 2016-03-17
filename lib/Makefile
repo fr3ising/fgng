@@ -5,7 +5,7 @@ LD = g++
 CC_FLAGS = -Wall -Werror -I/usr/include/SDL2/ --pedantic  -c -O3
 LD_FLAGS = -Wall -Werror --pedantic -lm -O3
 
-OBJECTS = fgng.o fgng_dummy.o
+OBJECTS = fgng.o fgng_dummy.o fgng_map.o
 
 libo2020-1.0.a:  $(OBJECTS)
 	$(AR) r libfgng-1.0.a $(OBJECTS)
